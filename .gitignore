@@ -40,3 +40,22 @@ yarn-error.log*
 .vscode/
 .idea/
 .eslintcache
+
+# =========================
+# Prolog Temporary Files
+# =========================
+*.pl~
+.swipl-history
+*.o
+
+# =========================
+# System Specific (Windows/Mac)
+# =========================
+Thumbs.db
+desktop.ini
+
+# =========================
+# Shadcn/UI & Tooling
+# =========================
+.vercel
+.turbo
