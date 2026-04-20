@@ -8,15 +8,18 @@
 ---
 
 ## ⚙️ Installation & Setup
+```bash
 cd Client
 npm install
 npm run dev
+```
 
 ## tailwind & shadcn installation
+```bash
 npm install -D tailwindcss postcss autoprefixer
 npx shadcn@latest init
 npx shadcn@latest add button input dialog table card toast
-
+```
 ### 1. الكلون بتاع البروجكت
 ```bash
 git clone [https://github.com/ahmedhesham001/Student-planner.git](https://github.com/ahmedhesham001/Student-planner.git)
