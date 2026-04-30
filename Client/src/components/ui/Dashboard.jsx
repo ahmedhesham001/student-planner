@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
-import './App.css'
+import '../../App.css'
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+
 
 function Dashboard() {
     const navigate = useNavigate()

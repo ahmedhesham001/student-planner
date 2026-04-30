@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import './App.css'
-import Dashboard from './Dashboard'
+import '../../App.css'
+import Dashboard from './Dashboard.jsx'
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+
 
 function Auth() {
   const navigate = useNavigate()
