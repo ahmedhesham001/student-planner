@@ -1,12 +1,42 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
 import './App.css'
+import Chart from "./Chart";
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-function Dashboard() {
+    function Dashboard() {
+        
+    const [chartData, setChartData] = useState(null);
+     const generateSchedule = () => {
+  const days = ["Sun", "Mon", "Tue", "Wed"];
+
+  const times = [3, 6, 9];
+
+  setChartData({
+    labels: days,
+
+    datasets: [
+      {
+        label: "3-6",
+        data: days.map(() => 3),
+        backgroundColor: "blue",
+      },
+      {
+        label: "6-9",
+        data: days.map(() => 6),
+        backgroundColor: "green",
+      },
+      {
+        label: "3-9",
+        data: days.map(() => 9),
+        backgroundColor: "red",
+      },
+    ],
+  });
+};
     const navigate = useNavigate()
     const [subject,setSubject]=useState(
         {
@@ -93,9 +123,10 @@ function handleDelete(index){
                         <Button type="submit" >
                             Add Subject
                         </Button>
-                        <Button>
+                        <Button onClick={generateSchedule}>
                             Generate Schedule
                         </Button>
+                        
                     </div>
                 </form>
             </div>
@@ -129,6 +160,7 @@ function handleDelete(index){
                     <p className='text-center mt-10 text-neutral-500 text-lg'>No subjects added yet</p>
                 )
             }
+            {chartData && <Chart data={chartData} />}
         </>
     )
 }
