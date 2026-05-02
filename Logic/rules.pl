@@ -10,20 +10,25 @@ solve_tasks(Tasks, SortedTasks):-
     remove_priorities(ReverseSortedTasksWithPriority, SortedTasks).
 
 add_priorities([],[]).
+
 add_priorities([T|Rest], [P-T|RestP]):-
     calculate_priority(T, P),
     add_priorities(Rest, RestP).
 
 remove_priorities([],[]).
+
 remove_priorities([_-T|RestP], [T|Rest]):-
     remove_priorities(RestP, Rest).
 
 generate_day(Tasks, Schedule) :-
     solve_tasks(Tasks, SortedTasks), 
     fill_slots(8, SortedTasks, Schedule, none, []). 
-fill_slots(0, _, [], _, _).
 
-fill_slots(MaxHours, Tasks, [session(Name, SessionDuration)|Next], Prev, Counts) :-
+fill_slots(0, _, [], _, _) :- !.
+fill_slots(Rem, _, [], _, _) :- Rem < 1, !.
+fill_slots(_, [], [], _, _) :- !.
+
+fill_slots(MaxHours, Tasks, [[Name, SessionDuration]|Next], Prev, Counts) :-
     MaxHours > 0,
     member(task(Name, Diff, Dead, RemainingHours), Tasks),
     RemainingHours > 0,
@@ -37,8 +42,11 @@ fill_slots(MaxHours, Tasks, [session(Name, SessionDuration)|Next], Prev, Counts)
     
     update_count(Name, Counts, NewCounts),
     NewMaxHours is MaxHours - SessionDuration,
+    !,
     
     fill_slots(NewMaxHours, NewTasks, Next, Name, NewCounts).
+
+fill_slots(_, _, [], _, _).
 
 update_task_hours(Name, NewHours, [task(Name, D, De, _)|Rest], [task(Name, D, De, NewHours)|Rest]) :- !.
 update_task_hours(Name, NewHours, [H|Rest], [H|NewRest]) :- update_task_hours(Name, NewHours, Rest, NewRest).
