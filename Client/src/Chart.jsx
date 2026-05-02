@@ -8,6 +8,7 @@ import {
   Legend
 } from "chart.js";
 
+
 import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
@@ -27,28 +28,40 @@ function Chart({ data }) {
     legend: {
         position: "top",
     },
+    tooltip: {
+      callbacks: {
+        label: (context) => {
+            const d = context.raw;
+            if (Array.isArray(d[0])) return ""; 
+            return `${context.dataset.label}: ${d.x[0]}h - ${d.x[1]}h`;
+        }
+      }
+    },
     title: {
         display: true,
-        text: "Study Schedule",
+        text: "Subjects Distribution",
     },
     },
     scales: {
   x: {
+    stacked:true,
+    min: 0,
+    max: 9,
     title: {
       display: true,
-      text: "Time Slots",
+      text: "Hours",
     },
     ticks: {
-      callback: function(value, index, ticks) {
-        const times = ["3", "6", "9"];
-        return times[index] || "";
-      }
+      stepSize: 3,
+      callback: (value) => `${value}h`
+
     }
   },
   y: {
+    stacked: true,
     title: {
       display: true,
-      text: "Days",
+      text: "Subjects",
     },
   },
 },
