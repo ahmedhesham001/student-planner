@@ -8,45 +8,68 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 function Dashboard() {
-    const dummy = [
-        { "subject": "Logic", "duration": 3 },
-        { "subject": "History", "duration": 3 },
-        { "subject": "Logic", "duration": 2 }
-    ]
     const [chartData, setChartData] = useState(null);
-    const generateSchedule = (dummy) => {
-        const rawSubjects = dummy.map(s => s.subject);
-        const uniqueSubjects = [...new Set(rawSubjects)];
+    const renderChart = (schedule) => {
+    const MAX_HOURS = 8;
+    const rawSubjects = schedule.map(s => s.subject);
+    const uniqueSubjects = [...new Set(rawSubjects)];
 
-        const datasets = uniqueSubjects.map((subject, index) => {
-            const subjectSessions = []; 
-            let hoursTracked = 0;
+    const datasets = uniqueSubjects.map((subject, index) => {
+        const subjectSessions = []; 
+        let hoursTracked = 0;
 
-            dummy.forEach((session) => {
-                const start = hoursTracked;
-                const end = hoursTracked + session.duration;
+        schedule.forEach((session) => {
+            if (hoursTracked >= MAX_HOURS) return; 
 
-                if (session.subject === subject) {
-                    subjectSessions.push({
-                        y: subject,
-                        x: [start,end]
-                    });
-                }
+            const start = hoursTracked;
+            const duration = Math.min(session.duration, MAX_HOURS - hoursTracked);
+            const end = start + duration;
 
-                hoursTracked = end;
+            if (session.subject === subject && duration > 0) {
+                subjectSessions.push({
+                    y: subject,
+                    x: [start, end]
+                });
+            }
+            hoursTracked += duration;
+        });
+
+        return {
+            label: subject,
+            data: subjectSessions,
+            backgroundColor: `hsla(${index * (360 / uniqueSubjects.length)}, 70%, 50%, 0.8)`,
+            barPercentage: 0.6,
+        };
+    });
+
+    setChartData({
+        labels: uniqueSubjects,
+        datasets: datasets,
+    });
+};
+    const generateSchedule = async () => {
+        if(subjectsList.length===0){
+            alert("Please add subjects first");
+            return;
+        }
+        try{
+            const res = await fetch("http://localhost:3000/generate",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({tasks:subjectsList})
             });
-
-            return {
-                label: subject,
-                data: subjectSessions,
-                backgroundColor: `hsla(${index * 50}, 70%, 50%, 0.8)`,
-                barPercentage: 0.6,
-            };
-        });
-        setChartData({
-            labels: uniqueSubjects,
-            datasets: datasets,
-        });
+            const data = await res.json();
+            const schedule = data.schedule;
+            if(schedule){
+                renderChart(schedule);
+            }
+        }catch(error){
+            console.error("Error calling backend: ",error);
+            alert("Error generating schedule");
+            return;
+        }
     };
     const navigate = useNavigate()
     const [subject,setSubject]=useState(
@@ -134,7 +157,7 @@ function handleDelete(index){
                         <Button type="submit" >
                             Add Subject
                         </Button>
-                        <Button onClick={()=>generateSchedule(dummy)}>
+                        <Button onClick={generateSchedule}>
                             Generate Schedule
                         </Button>
                         
