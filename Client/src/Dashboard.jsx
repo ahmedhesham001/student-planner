@@ -98,6 +98,11 @@ function Dashboard() {
             alert("Difficulty must be between 1 and 10");
             return;
         }
+        const currentTotalHours = subjectsList.reduce((sum, s) => sum + parseInt(s.hours), 0);
+        if(currentTotalHours + parseInt(subject.hours) > 8){
+            alert("Total hours must be less than or equal to 8");
+            return;
+        }
         setSubjectsList([...subjectsList, subject]);
 
         setSubject({
@@ -132,7 +137,7 @@ function handleDelete(index){
 
                     <Input name="difficulty"
                     type="number"
-                    placeholder="1-10"
+                    placeholder="difficulty 1-10"
                     min={1}
                     max={10}
                     value={subject.difficulty}
@@ -142,7 +147,7 @@ function handleDelete(index){
 
                     <Input name="deadline"
                     type="number"
-                    placeholder="1-30"
+                    placeholder="deadline 1-30"
                     value={subject.deadline}
                     onChange={change}/>
 
@@ -150,7 +155,7 @@ function handleDelete(index){
 
                     <Input name="hours"
                     type='number'
-                    placeholder="24"
+                    placeholder="number of hours"
                     value={subject.hours}
                     onChange={change}/>
                     <div>
@@ -163,6 +168,9 @@ function handleDelete(index){
                         
                     </div>
                 </form>
+                <p className="text-right mt-2 font-semibold">
+                    Total Hours: {subjectsList.reduce((sum, item) => sum + parseInt(item.hours), 0)} / 8
+                </p>
             </div>
             {
                 subjectsList.length > 0 ? (
