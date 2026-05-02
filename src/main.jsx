@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import Auth from './Auth.jsx'
 import Dashboard from './Dashboard.jsx'
+import Chart from './Chart'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 createRoot(document.getElementById('root')).render(
@@ -11,6 +12,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="" element={<Auth />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/chart" element={<Chart />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

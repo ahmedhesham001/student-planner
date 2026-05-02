@@ -1,12 +1,55 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
 import './App.css'
+import Chart from "./Chart";
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-function Dashboard() {
+    function Dashboard() {
+        const dummy = [
+            { "subject": "Logic", "duration": 3 },
+            { "subject": "History", "duration": 3 },
+            { "subject": "Logic", "duration": 2 }
+        ]
+        const [chartData, setChartData] = useState(null);
+        const generateSchedule = (dummy) => {
+            
+
+            const rawSubjects = dummy.map(s => s.subject);
+            const uniqueSubjects = [...new Set(rawSubjects)];
+        
+            const datasets = uniqueSubjects.map((subject, index) => {
+                const subjectSessions = []; 
+                let hoursTracked = 0;
+
+                dummy.forEach((session) => {
+                    const start = hoursTracked;
+                    const end = hoursTracked + session.duration;
+
+                    if (session.subject === subject) {
+                        subjectSessions.push({
+                            y: subject,
+                            x: [start,end]
+                        });
+                    }
+                    
+                    hoursTracked = end;
+                });
+
+                return {
+                    label: subject,
+                    data: subjectSessions,
+                    backgroundColor: `hsla(${index * 50}, 70%, 50%, 0.8)`,
+                    barPercentage: 0.6,
+                };
+            });
+            setChartData({
+                labels: uniqueSubjects,
+                datasets: datasets,
+            });
+            };
     const navigate = useNavigate()
     const [subject,setSubject]=useState(
         {
@@ -93,9 +136,10 @@ function handleDelete(index){
                         <Button type="submit" >
                             Add Subject
                         </Button>
-                        <Button>
+                        <Button onClick={()=>generateSchedule(dummy)}>
                             Generate Schedule
                         </Button>
+                        
                     </div>
                 </form>
             </div>
@@ -129,6 +173,7 @@ function handleDelete(index){
                     <p className='text-center mt-10 text-neutral-500 text-lg'>No subjects added yet</p>
                 )
             }
+            {chartData && <Chart data={chartData} />}
         </>
     )
 }
