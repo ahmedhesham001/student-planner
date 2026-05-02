@@ -7,36 +7,47 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-    function Dashboard() {
-        
+function Dashboard() {
+    const dummy = [
+        { "subject": "Logic", "duration": 3 },
+        { "subject": "History", "duration": 3 },
+        { "subject": "Logic", "duration": 2 }
+    ]
     const [chartData, setChartData] = useState(null);
-     const generateSchedule = () => {
-  const days = ["Sun", "Mon", "Tue", "Wed"];
+    const generateSchedule = (dummy) => {
+        const rawSubjects = dummy.map(s => s.subject);
+        const uniqueSubjects = [...new Set(rawSubjects)];
 
-  const times = [3, 6, 9];
+        const datasets = uniqueSubjects.map((subject, index) => {
+            const subjectSessions = []; 
+            let hoursTracked = 0;
 
-  setChartData({
-    labels: days,
+            dummy.forEach((session) => {
+                const start = hoursTracked;
+                const end = hoursTracked + session.duration;
 
-    datasets: [
-      {
-        label: "3-6",
-        data: days.map(() => 3),
-        backgroundColor: "blue",
-      },
-      {
-        label: "6-9",
-        data: days.map(() => 6),
-        backgroundColor: "green",
-      },
-      {
-        label: "3-9",
-        data: days.map(() => 9),
-        backgroundColor: "red",
-      },
-    ],
-  });
-};
+                if (session.subject === subject) {
+                    subjectSessions.push({
+                        y: subject,
+                        x: [start,end]
+                    });
+                }
+
+                hoursTracked = end;
+            });
+
+            return {
+                label: subject,
+                data: subjectSessions,
+                backgroundColor: `hsla(${index * 50}, 70%, 50%, 0.8)`,
+                barPercentage: 0.6,
+            };
+        });
+        setChartData({
+            labels: uniqueSubjects,
+            datasets: datasets,
+        });
+    };
     const navigate = useNavigate()
     const [subject,setSubject]=useState(
         {
@@ -123,7 +134,7 @@ function handleDelete(index){
                         <Button type="submit" >
                             Add Subject
                         </Button>
-                        <Button onClick={generateSchedule}>
+                        <Button onClick={()=>generateSchedule(dummy)}>
                             Generate Schedule
                         </Button>
                         
