@@ -1,46 +1,19 @@
 import { useState } from 'react'
-import './App.css'
-import Dashboard from './Dashboard'
+// import "./App.css"
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import apple from "./assets/apple.svg"
-import { createClient } from '@supabase/supabase-js';
 function Auth() {
   const [showOtp, setShowOtp] = useState(false);
-  const supabase = createClient('https://jwmlzordbunniigqkxdr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3bWx6b3JkYnVubmlpZ3FreGRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NzI5NjcsImV4cCI6MjA5MjM0ODk2N30.vDUxu1vE01AmiOviDcH-lfMf_va2iIJbrpU9WfMBz-g')
-  const [formData, setFormData] = useState({ username: '', password: '', otp: '' });
   const navigate = useNavigate()
   const handleLogin = async (e) => {
   e.preventDefault();
-  const { data, error } = await supabase
-    .from('user')
-    .insert([{ email: formData.username, password: formData.password }]);
-
-  if (error) {
-    console.error("Error saving to cloud:", error);
-  } else {
-    console.log("Data saved to cloud successfully!");
-    setShowOtp(true);
-    
-  }
+  setShowOtp(true);
 }
-const handleVerify = async (e) => {
-  e.preventDefault();
-  const { data, error } = await supabase
-    .from('user')
-    .insert([{ email: formData.username, password: formData.password, OTP: formData.otp }]);
 
-  if (error) {
-    console.error("Error saving to cloud:", error);
-  } else {
-    console.log("Data saved to cloud successfully!");
-    navigate('/dashboard');
-    
-  }
-}
   return (
     <>
       <Card className="w-[350px] mx-auto mt-50">
